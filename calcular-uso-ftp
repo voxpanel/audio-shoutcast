@@ -1,0 +1,17 @@
+#!/bin/bash
+# Script para calcular o uso do FTP nos streamings usando o pure-quotacheck
+
+# Carrega lista com os streamings
+for porta in `find /home/streaming -maxdepth 1 -type d | cut -d / -f 4 | sort`;
+do
+
+# Verifica se a porta é válida
+if [[ $porta == ?(-)+([0-9]) ]]; then
+
+/usr/sbin/pure-quotacheck -u streaming -d /home/streaming/$porta
+
+echo $porta
+
+fi
+
+done

@@ -1,0 +1,20 @@
+#!/usr/bin/php
+<?php
+// Hora Certa com Fuso Horário
+
+// Opções de execussão
+$voz = @$argv[1];
+$fuso_horario = @$argv[2];
+
+if($fuso_horario) {
+date_default_timezone_set("".$fuso_horario."");
+}
+
+list($hora, $minuto) = explode(":",@date("H:i"));
+
+if($minuto == 00) {
+echo "/home/streaming/hora_certa/".$voz."_".$hora.".mp3";
+} else {
+echo "/home/streaming/hora_certa/".$voz."_".$hora."_".$minuto.".mp3";
+}
+?>

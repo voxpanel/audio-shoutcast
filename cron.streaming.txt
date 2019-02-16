@@ -1,0 +1,2 @@
+*/5 * * * * /usr/bin/vnstat -u
+*/10 * * * * /home/streaming/calcular-uso-ftp

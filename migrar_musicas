@@ -1,0 +1,69 @@
+#!/bin/bash
+#@/home/streaming/migrar_musicas - Script para migrar musicas de streamings remotos
+
+if [ $# = 0 ]; then
+
+echo
+echo "Modo de Uso: /home/streaming/migrar_musicas FTP-HOST FTP-USUARIO FTP-SENHA PORTA-DESTINO"
+echo
+exit
+
+fi
+
+# Muda prioridade de execussao
+renice -20 $$
+
+# Cores
+EfeitoCorOK="\033[0;32m"
+EfeitoCorAlerta="\033[1;33m"
+EfeitoCorErro="\033[0;31m"
+EfeitoFecha="\033[0m"
+
+# Variaveis
+ftp_host=$1
+ftp_usuario=$2
+ftp_senha=$3
+destino=$4
+
+echo
+
+echo -e $EfeitoCorOK Migração de Músicas $EfeitoFecha
+echo -e $EfeitoCorAlerta FTP Host: $ftp_host $EfeitoFecha
+echo -e $EfeitoCorAlerta FTP Usuário: $ftp_usuario $EfeitoFecha
+echo -e $EfeitoCorAlerta FTP Senha: $ftp_senha $EfeitoFecha
+echo -e $EfeitoCorAlerta Destino: /home/streaming/$destino $EfeitoFecha
+
+echo
+
+echo -e $EfeitoCorAlerta Criando deiretorio temporario... $EfeitoFecha
+
+mkdir /home/streaming/migracao
+mkdir /home/streaming/migracao/$destino
+
+echo -e $EfeitoCorAlerta Montando servidor de FTP remoto... $EfeitoFecha
+
+/usr/bin/curlftpfs -o allow_other -o user="$ftp_usuario:$ftp_senha" $ftp_host /home/streaming/migracao/$destino
+
+echo -e $EfeitoCorAlerta Copiando músicas... $EfeitoFecha
+
+total_arquivos=`find /home/streaming/migracao/$destino -type f | wc -l`
+
+echo -e $EfeitoCorAlerta Total de arquivos a copiar: $total_arquivos $EfeitoFecha
+
+mkdir /home/streaming/$destino
+
+cp -Rfv /home/streaming/migracao/$destino/* /home/streaming/$destino/
+
+rm -Rf /home/streaming/migracao/$destino/*
+
+total_arquivos_copiados=`find /home/streaming/$destino -type f | wc -l`
+
+echo -e $EfeitoCorAlerta Total de arquivos no FTP: $total_arquivos $EfeitoFecha
+echo -e $EfeitoCorAlerta Total de arquivos copiados: $total_arquivos_copiados $EfeitoFecha
+
+/bin/umount /home/streaming/migracao/$destino
+
+chown -Rf streaming.streaming /home/streaming/$destino
+
+echo -e $EfeitoCorOK Concluído $EfeitoFecha
+

@@ -1,0 +1,19 @@
+#!/bin/bash
+# @pular_musica_autodj - Script para pular música atual do AutoDJ
+
+porta=$1
+
+pid_proc=`ps x | grep sc_trans | grep $porta | awk {'print $1'}`
+
+if [ "$pid_proc" ]; then
+
+kill -SIGWINCH $pid_proc
+
+echo "ok"
+
+else
+
+echo "Não foi possível pular a música atual do AutoDJ"
+
+fi
+

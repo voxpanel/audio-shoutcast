@@ -1,0 +1,19 @@
+#!/bin/bash
+# @desligar_streaming - Script para desligar streaming
+
+porta=$1
+
+pid_proc=`ps x | grep sc_serv | grep $porta | awk {'print $1'}`
+
+if [ "$pid_proc" ]; then
+
+kill -9 $pid_proc
+
+echo "ok"
+
+else
+
+echo "erro"
+
+fi
+

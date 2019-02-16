@@ -1,0 +1,18 @@
+#!/bin/bash
+# @recarregar_playlist_autodj - Script para recarregar playlist atual do AutoDJ
+
+porta=$1
+
+pid_proc=`ps x | grep sc_trans | grep $porta | awk {'print $1'}`
+
+if [ "$pid_proc" ]; then
+
+kill -SIGUSR1 $pid_proc
+
+echo "ok"
+
+else
+
+echo "Não foi possível recarregar a playlist do AutoDJ"
+
+fi

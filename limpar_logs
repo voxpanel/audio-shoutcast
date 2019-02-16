@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cd /home/streaming/logs/
+
+for log in *.log
+do
+
+echo > /home/streaming/logs/$log
+
+echo Log: $log
+
+done

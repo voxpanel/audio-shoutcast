@@ -1,0 +1,45 @@
+#!/bin/bash
+#@/home/streaming/migrar_streaming - Script para efetuar a migração de um streaming
+
+if [ $# = 0 ]; then
+
+echo
+echo "Modo de Uso: /home/streaming/migrar_streaming IP PORTA"
+echo
+exit
+
+fi
+
+
+# Muda prioridade de execussao
+renice -20 $$
+
+# Cores
+EfeitoCorOK="\033[0;32m"
+EfeitoCorAlerta="\033[1;33m"
+EfeitoCorErro="\033[0;31m"
+EfeitoFecha="\033[0m"
+
+# Variaveis gerais
+ip=$1
+porta=$2
+
+read -s -p "Senha: " senha
+
+echo
+
+echo -e $EfeitoCorOK Migração de Streaming $EfeitoFecha
+echo -e $EfeitoCorAlerta Porta: $porta $EfeitoFecha
+echo -e $EfeitoCorAlerta Servidor Atual: $ip $EfeitoFecha
+
+echo
+
+echo -e $EfeitoCorAlerta Migrando músicas... $EfeitoFecha
+
+sshpass -p "$senha" rsync $3 -rogpae 'ssh -p 6985 -o StrictHostKeyChecking=no' root@$1:/home/streaming/$2/ /home/streaming/$2/
+
+echo -e $EfeitoCorAlerta Migrando playlists... $EfeitoFecha
+
+sshpass -p "$senha" rsync $3 -rogpae 'ssh -p 6985 -o StrictHostKeyChecking=no' root@$1:/home/streaming/playlists/$2* /home/streaming/playlists/
+
+echo -e $EfeitoCorOK Migração Concluída $EfeitoFecha

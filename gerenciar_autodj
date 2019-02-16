@@ -1,0 +1,57 @@
+#!/bin/bash
+# @gerenciar_autodj - Script para gerenciar acoes no autodj como recarregar playlist, shuffle, etc...
+
+acao=$1
+porta=$2
+
+pid_proc=`ps x | grep sc_trans | grep $porta | awk {'print $1'}`
+
+if [ "$acao" = "shuffle" ]; then
+
+if [ "$pid_proc" ]; then
+
+kill -SIGUSR2 $pid_proc
+
+echo "ok"
+
+else
+
+echo "Não foi possível mudar ordem da playlist do AutoDJ"
+
+fi
+
+fi
+
+if [ "$acao" = "pular_musica" ]; then
+
+if [ "$pid_proc" ]; then
+
+kill -SIGWINCH $pid_proc
+
+echo "ok"
+
+else
+
+echo "Não foi possível pular a musica atual do AutoDJ"
+
+fi
+
+
+fi
+
+if [ "$acao" = "recarregar_playlist" ]; then
+
+if [ "$pid_proc" ]; then
+
+kill -SIGUSR1 $pid_proc
+
+echo "ok"
+
+else
+
+echo "Não foi possível recarregar a playlist do AutoDJ"
+
+fi
+
+fi
+

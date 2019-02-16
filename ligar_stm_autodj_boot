@@ -1,0 +1,38 @@
+#!/bin/bash
+# @ligar_stm_autodj_boot - Liga os streamings e autodj ao iniciar o servidor.
+ulimit -n 300000
+
+for porta in `ls -l /home/streaming | grep ^d | awk {'print $9'} | grep -v conf | grep -v logs | grep -v playlists | cut -d "/" -f 1` ; do
+
+if [ -f /home/streaming/configs/$porta.conf ]; then
+
+echo Ligando streaming $porta
+
+nohup /home/streaming/sc_serv /home/streaming/configs/$porta.conf > /dev/null & echo $!
+
+sleep 2
+
+fi
+
+if [ -f /home/streaming/configs/autodj-$porta.conf ]; then
+
+# Verifica status do autodj
+status_autodj=1
+
+if [ "$status_autodj" -lt "2" ]; then
+
+echo Ligando autodj $porta
+
+nohup /home/streaming/sc_trans /home/streaming/configs/autodj-$porta.conf > /dev/null & echo $!
+
+else
+
+echo Autodj $porta ja esta ligado.
+
+fi
+
+fi
+
+done
+
+echo Concluido
